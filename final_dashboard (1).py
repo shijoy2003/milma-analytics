@@ -501,7 +501,7 @@ Original file is located at
 
 # 1. Clear previous sessions
 
-!pkill cloudflared
+
 !fuser -k 8501/tcp
 
 # 2. Install Cloudflare Tunnel
