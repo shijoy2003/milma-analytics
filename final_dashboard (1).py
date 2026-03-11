@@ -143,12 +143,13 @@ def create_toggle_chart(data_df, title_text, label_prefix=""):
 
 # 3. INTERFACE
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/en/2/23/Milma_Logo.png", width=100) # Optional: Milma Logo
-    st.title("Strategic Control")
+    st.title(" Strategic Control")
     st.markdown("---")
-    uploaded_files = st.file_uploader("📂 Upload Sales Data", type="csv", accept_multiple_files=True)
+    # This variable 'files' is what was causing your NameError
+    files = st.file_uploader(" Upload Sales Data (2020-2025)", type="csv", accept_multiple_files=True)
     st.markdown("---")
-    st.caption("Post-Graduate Research Project | 2026")
+    st.caption("Post-Graduate Research Project")
+    st.caption("Subject: Malabar Milma Analytics")
 
 if files:
     df = load_and_clean_data(files)
