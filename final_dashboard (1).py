@@ -8,7 +8,7 @@ Original file is located at
 """
 
 # Commented out IPython magic to ensure Python compatibility.
-# %%writefile app.py
+# 
 # import streamlit as st
 # import pandas as pd
 # import numpy as np
@@ -500,7 +500,7 @@ Original file is located at
 #     st.info("Upload CSV files to begin.")
 
 # 1. Clear previous sessions
-!pkill streamlit
+
 !pkill cloudflared
 !fuser -k 8501/tcp
 
