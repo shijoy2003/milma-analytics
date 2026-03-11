@@ -142,8 +142,13 @@ def create_toggle_chart(data_df, title_text, label_prefix=""):
     return fig
 
 # 3. INTERFACE
-st.sidebar.title(" Milma Analytics")
-files = st.sidebar.file_uploader("Upload CSVs", type="csv", accept_multiple_files=True)
+with st.sidebar:
+    st.image("https://upload.wikimedia.org/wikipedia/en/2/23/Milma_Logo.png", width=100) # Optional: Milma Logo
+    st.title("Strategic Control")
+    st.markdown("---")
+    uploaded_files = st.file_uploader("📂 Upload Sales Data", type="csv", accept_multiple_files=True)
+    st.markdown("---")
+    st.caption("Post-Graduate Research Project | 2026")
 
 if files:
     df = load_and_clean_data(files)
