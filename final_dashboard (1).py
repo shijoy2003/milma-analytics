@@ -10,13 +10,6 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import r2_score, mean_squared_error
 
-# 1. PAGE SETUP & THEMING
-st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
-
-# 2. THE PROFESSIONAL CSS
-Python
-import streamlit as st
-
 # 1. PAGE SETUP
 st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
 
