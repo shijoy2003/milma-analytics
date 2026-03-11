@@ -155,8 +155,12 @@ Original file is located at
 # st.sidebar.title(" Milma Analytics")
 # files = st.sidebar.file_uploader("Upload CSVs", type="csv", accept_multiple_files=True)
 # 
-# if files:
-#     df = load_and_clean_data(files)
+# # Try to load the file directly from your GitHub folder
+#try:
+#    df = pd.read_csv('milma_data.csv') # Use your exact filename here
+#    files = True # This "tricks" the app into thinking a file was uploaded
+#except:
+#    files = st.sidebar.file_uploader("Upload CSVs", type="csv", accept_multiple_files=True)
 #     if not df.empty:
 #         menu = st.sidebar.radio("Navigation", ["Executive Summary", "Product-Wise Trend", "Product Rankings", "Elasticity Engine", "Price Optimization", "Strategic Clustering", "Strategic Recommendations", "Risk & Forecast"])
 #         sel_dept = st.sidebar.selectbox("Department", sorted(df['dept'].unique()))
