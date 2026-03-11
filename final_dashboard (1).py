@@ -491,17 +491,3 @@ else:
 
 
 
-# 1. Clear previous sessions
-!pkill streamlit
-!pkill cloudflared
-!fuser -k 8501/tcp
-
-# 2. Install Cloudflare Tunnel
-!wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-!dpkg -i cloudflared-linux-amd64.deb
-
-# 3. Install Streamlit
-!pip install streamlit
-
-# 4. Start the Website and the Tunnel
-!streamlit run app.py & cloudflared tunnel --url http://localhost:8501
