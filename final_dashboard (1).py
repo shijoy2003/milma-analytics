@@ -10,38 +10,54 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import r2_score, mean_squared_error
 
-# 1. PAGE SETUP
-st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
+import streamlit as st
+import plotly.express as px
 
-# 2. PREMIUM CSS (Using colors from your reference image)
+# 1. PAGE ARCHITECTURE
+st.set_page_config(
+    page_title="Milma Strategic Intelligence | 2020-2025",
+    page_icon="🥛",
+    layout="wide"
+)
+
+# 2. PREMIUM CORPORATE STYLING (Times New Roman + Glass UI)
 st.markdown("""
     <style>
-    /* Global Font: Times New Roman */
-    html, body, [class*="css"], .stApp, h1, h2, h3, p, span, div, button {
+    /* Typography: Academic Standard */
+    html, body, [class*="css"], .stApp, h1, h2, h3, p, span, div, button, select {
         font-family: 'Times New Roman', Times, serif !important;
     }
 
-    /* Professional Background Gradient */
+    /* Background: Deep Executive Gradient */
     .stApp {
-        background: linear-gradient(180deg, #011425 0%, #1F4959 100%);
-        color: white;
+        background: radial-gradient(circle at top right, #1F4959, #011425);
+        color: #FFFFFF;
     }
 
-    /* Sidebar Styling */
+    /* Sidebar: Professional Slate */
     [data-testid="stSidebar"] {
         background-color: rgba(1, 20, 37, 0.95) !important;
         border-right: 1px solid #5C7C89;
     }
 
-    /* Clean Card Containers */
-    div[data-testid="stMetric"], .stPlotlyChart {
-        background-color: rgba(255, 255, 255, 0.05) !important;
+    /* Glassmorphism Cards: Clean Containers for Data */
+    div[data-testid="stMetric"], .stPlotlyChart, .stDataFrame {
+        background: rgba(255, 255, 255, 0.03) !important;
         border: 1px solid rgba(92, 124, 137, 0.3) !important;
-        border-radius: 10px !important;
-        backdrop-filter: blur(10px);
+        border-radius: 12px !important;
+        padding: 20px !important;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Metric Styling: Emerald Green for Growth */
+    [data-testid="stMetricValue"] {
+        color: #2ECC71 !important;
+        font-weight: bold;
     }
     </style>
-""", unsafe_allow_html=True
+""", unsafe_allow_html=True)
+
 
 # ---------------------------------------------------------
 # GLOBAL UTILITY FUNCTIONS
