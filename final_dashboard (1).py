@@ -11,36 +11,44 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import r2_score, mean_squared_error
 
 # 1. PAGE SETUP & THEMING
-# 1. PREMIUM INTERFACE SETUP
-# 1. PREMIUM INTERFACE SETUP
 st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
 
+# 2. THE PROFESSIONAL CSS
 st.markdown("""
     <style>
-    /* 1. Global Font Change to Times New Roman */
-    html, body, [class*="css"], .stApp, h1, h2, h3, p, span, div, button, select {
+    /* Global Font: Times New Roman */
+    html, body, [class*="css"], .stApp, h1, h2, h3, p, span, div, button {
         font-family: 'Times New Roman', Times, serif !important;
+        color: #2C3E50; /* Deep charcoal for readability */
     }
 
-    /* 2. Premium Dark Gradient Background */
+    /* Professional Light Background */
     .stApp {
-        background: radial-gradient(circle at top left, #011425 0%, #050505 100%);
+        background-color: #F8F9FA;
     }
 
-    /* 3. Glassmorphism for Sidebar */
+    /* White Sidebar for a clean look */
     [data-testid="stSidebar"] {
-        background-color: rgba(1, 20, 37, 0.95) !important;
-        border-right: 1px solid #1F4959;
+        background-color: #FFFFFF !important;
+        border-right: 1px solid #E0E0E0;
     }
 
-    /* 4. Glowing Premium Cards for Metrics & Charts */
-    div[data-testid="stMetric"], .stDataFrame, .stPlotlyChart {
-        background: rgba(255, 255, 255, 0.03) !important;
-        border: 1px solid rgba(92, 124, 137, 0.3) !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8) !important;
-        backdrop-filter: blur(10px);
+    /* Card-based layout for charts and metrics */
+    div[data-testid="stMetric"], .stPlotlyChart, .stDataFrame {
+        background-color: #FFFFFF !important;
+        border-radius: 8px !important;
+        padding: 25px !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid #EDEDED !important;
+    }
+
+    /* Professional Blue Buttons */
+    .stButton>button {
+        background-color: #1F497D; /* Navy Blue */
+        color: white;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
     }
     </style>
 """, unsafe_allow_html=True)
