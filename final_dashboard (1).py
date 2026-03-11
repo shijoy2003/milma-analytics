@@ -145,12 +145,6 @@ if files:
             st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); 
             st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
 
-        fig.update_layout(
-                template="plotly_dark",
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font_color="#FFFFFF",
-                margin=dict(l=20, r=20, t=40, b=20)
 
         elif menu == "Product-Wise Trend":
             st.title(" Product Monthly Analysis")
