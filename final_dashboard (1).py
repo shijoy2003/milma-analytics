@@ -16,7 +16,7 @@ import plotly.express as px
 # 1. PAGE ARCHITECTURE
 st.set_page_config(
     page_title="Milma Strategic Intelligence | 2020-2025",
-    page_icon="🥛",
+    page_icon="",
     layout="wide"
 )
 
@@ -298,6 +298,46 @@ if files:
                     return pd.DataFrame(results)
                 f_target = st.selectbox("Select Product to Audit Impact", sorted(inventory_table['Product Name'].unique()))
                 st.table(calculate_rupee_impact(f_target, v, inventory_table))
+
+        elif menu == "Price Optimization":
+            st.title("Strategic Price Engine")
+            tab_chart, tab_audit = st.tabs(["Optimization Curve", " Revenue Gap Audit"])
+            with tab_chart:
+                product_list = v['product'].unique(); fig = go.Figure()
+                for prod in product_list:
+                    df_p = v[v['product'] == prod]
+                    if len(df_p) > 5:
+                        X, y = df_p[['price']].values, df_p['qty'].values
+                        poly = PolynomialFeatures(degree=2, include_bias=False); X_poly = poly.fit_transform(X); model = LinearRegression().fit(X_poly, y)
+                        y_pred_all = model.predict(X_poly); r2 = r2_score(y, y_pred_all)
+                        p_range = np.linspace(X.min() * 0.7, X.max() * 1.4, 100).reshape(-1, 1); pred_qty = model.predict(poly.transform(p_range))
+                        pred_rev = p_range.flatten() * pred_qty; opt_idx = np.argmax(pred_rev); opt_p, opt_q = p_range[opt_idx][0], pred_qty[opt_idx]
+                        fig.add_trace(go.Scatter(x=X.flatten(), y=y, mode='markers', name=f'Actual {prod}', visible=False, marker=dict(color='black', opacity=0.6)))
+                        fig.add_trace(go.Scatter(x=p_range.flatten(), y=pred_qty, mode='lines', name=f'Curve (R²: {r2:.2f})', visible=False, line=dict(color='red', width=3)))
+                        fig.add_trace(go.Scatter(x=[opt_p], y=[opt_q], mode='markers+text', text=[f"OPTIMAL: ₹{opt_p:.2f}"], textposition="top center", name=f"Peak {prod}", visible=False, marker=dict(color='blue', size=14, symbol='diamond')))
+                buttons = []
+                for i, prod in enumerate(product_list):
+                    visibility = [False] * len(fig.data); visibility[i*3 : i*3 + 3] = [True, True, True]
+                    buttons.append(dict(label=prod, method="update", args=[{"visible": visibility}, {"title": f"<b>{prod} Strategy</b>"}]))
+                if len(fig.data) > 0:
+                    for j in range(3): fig.data[j].visible = True
+                fig.update_layout(updatemenus=[dict(active=0, buttons=buttons, x=0, y=1.2, xanchor="left", yanchor="top")], title=f"<b>MILMA PRICE OPTIMIZATION ENGINE</b>", xaxis_title="Price per Unit (₹)", yaxis_title="Demand (Units)", template="plotly_white", hovermode="x unified")
+                st.plotly_chart(fig, use_container_width=True)
+            with tab_audit:
+                audit_data = []; prod_list_audit = v['product'].unique()
+                for prod in prod_list_audit:
+                    df_p = v[v['product'] == prod]
+                    if len(df_p) > 5:
+                        X, y = df_p[['price']].values, df_p['qty'].values
+                        poly = PolynomialFeatures(degree=2, include_bias=False); model = LinearRegression().fit(poly.fit_transform(X), y)
+                        p_range = np.linspace(X.min() * 0.5, X.max() * 1.5, 200).reshape(-1, 1); pred_qty = model.predict(poly.transform(p_range))
+                        current_avg_price, current_rev = X.mean(), X.mean() * y.mean()
+                        rev_curve = p_range.flatten() * pred_qty; opt_idx = np.argmax(rev_curve); opt_price, opt_rev = p_range[opt_idx][0], rev_curve[opt_idx]
+                        gap = opt_rev - current_rev
+                        audit_data.append({'Product': prod, 'Current Price': round(current_avg_price, 2), 'Optimal Price': round(opt_price, 2), 'Current Revenue': round(current_rev, 2), 'Potential Revenue': round(opt_rev, 2), 'Revenue Gap (₹)': round(gap, 2), 'Improvement (%)': round((gap / current_rev) * 100, 2)})
+                if audit_data:
+                    audit_df = pd.DataFrame(audit_data).sort_values(by='Revenue Gap (₹)', ascending=False)
+                    st.write("**REVENUE GAP AUDIT COMPLETED**"); st.dataframe(audit_df.head(129), use_container_width=True)
 
         elif menu == "Price Optimization":
             st.title("Strategic Price Engine")
