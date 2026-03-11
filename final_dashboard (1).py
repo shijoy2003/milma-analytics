@@ -205,7 +205,7 @@ if files:
     # 4. Display
     st.plotly_chart(fig_pie, use_container_width=True)
             
-         elif menu == "Elasticity Engine":
+     elif menu == "Elasticity Engine":
             st.title(" Advanced Product Categorization")
             tab_inventory, tab_seasonality, tab_cannibal, tab_fin = st.tabs(["Inventory Sensitivity Map", "The 'Heat Effect' Trend", "Cannibalization Audit", "Financial Impact Audit"])
 
