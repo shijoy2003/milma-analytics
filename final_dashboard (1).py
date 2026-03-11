@@ -11,50 +11,60 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import r2_score, mean_squared_error
 
 # 1. PAGE SETUP & THEMING
-st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide", page_icon="")
+# 1. PREMIUM INTERFACE SETUP
+# 1. PREMIUM INTERFACE SETUP
+st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
 
-# Integration of the provided color palette
-# Palette: #011425 (Navy), #1F4959 (Deep Teal), #5C7C89 (Steel Blue), #242424 (Slate), #FFFFFF (White)
 st.markdown("""
     <style>
-    /* Main Background - Deep Navy to Slate Gradient */
+    /* Main Background with a modern gradient */
     .stApp {
-        background: linear-gradient(180deg, #011425 0%, #242424 100%);
+        background: radial-gradient(circle at top left, #011425 0%, #050505 100%);
     }
 
-    /* Glassmorphism Cards with Steel Blue Borders */
-    div[data-testid="stMetric"], .stDataFrame, .stPlotlyChart {
-        background: rgba(31, 73, 89, 0.15) !important;
-        border: 1px solid #5C7C89 !important;
-        border-radius: 1px !important;
-        padding: 0px !important; /* Change from 20px to 0px */
-        overflow: hidden !important; /* Keeps the graph edges from sticking out */
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* Sidebar - Deep Teal Focus */
+    /* Glassmorphism Sidebar */
     [data-testid="stSidebar"] {
-        background-color: #011425 !important;
+        background-color: rgba(1, 20, 37, 0.95) !important;
         border-right: 1px solid #1F4959;
     }
 
-    /* Clean Modern Typography */
-    h1, h2, h3, p, span {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-        color: #FFFFFF !important;
+    /* Floating Premium Cards for Metrics & Charts */
+    div[data-testid="stMetric"], .stDataFrame, .stPlotlyChart {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(92, 124, 137, 0.3) !important;
+        border-radius: 15px !important;
+        padding: 15px !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
-    /* Custom Buttons using Steel Blue */
+    /* Neon Accent for Metric Values */
+    [data-testid="stMetricValue"] {
+        color: #2ECC71 !important;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+    }
+
+    /* Clean Sidebar Titles */
+    .css-17l2qt2 { 
+        font-family: 'Futura', 'Trebuchet MS', sans-serif;
+        letter-spacing: 1px;
+    }
+
+    /* Better Buttons */
     .stButton>button {
-        background-color: #1F4959;
-        color: #FFFFFF;
-        border: 1px solid #5C7C89;
-        border-radius: 8px;
-        transition: 0.3s;
+        background: linear-gradient(90deg, #1F4959 0%, #5C7C89 100%);
+        border: none;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 24px;
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background-color: #5C7C89;
-        border-color: #FFFFFF;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(92, 124, 137, 0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -156,7 +166,14 @@ if files:
             st.title(f" {sel_dept} Performance Overview")
             c1, c2, c3 = st.columns(3); active_list = sorted(v['product'].unique())
             c1.metric("Active Products", len(active_list)); c2.metric("Total Revenue", f"₹{v['sales'].sum():,.0f}"); c3.metric("Total Qty", f"{int(v['qty'].sum()):,}")
-            st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
+            st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); 
+            fig.update_layout(
+                template="plotly_dark",
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font_color="#FFFFFF",
+                margin=dict(l=20, r=20, t=40, b=20)
+            st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
 
         elif menu == "Product-Wise Trend":
             st.title(" Product Monthly Analysis")
