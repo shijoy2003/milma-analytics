@@ -1,4 +1,4 @@
-
+%%writefile app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,17 +10,7 @@ from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import r2_score, mean_squared_error
 
-import streamlit as st
-import plotly.express as px
-
-# 1. PAGE ARCHITECTURE
-st.set_page_config(
-    page_title="Milma Strategic Intelligence | 2020-2025",
-    page_icon="",
-    layout="wide"
-)
-
-# 2. PREMIUM CORPORATE STYLING (Times New Roman + Glass UI)
+# 1. PAGE SETUP & THEMING
 st.markdown("""
     <style>
     /* Typography: Academic Standard */
@@ -57,7 +47,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 # ---------------------------------------------------------
 # GLOBAL UTILITY FUNCTIONS
@@ -142,14 +131,8 @@ def create_toggle_chart(data_df, title_text, label_prefix=""):
     return fig
 
 # 3. INTERFACE
-with st.sidebar:
-    st.title(" Strategic Control")
-    st.markdown("---")
-    # This variable 'files' is what was causing your NameError
-    files = st.file_uploader(" Upload Sales Data (2020-2025)", type="csv", accept_multiple_files=True)
-    st.markdown("---")
-    st.caption("Post-Graduate Research Project")
-    st.caption("Subject: Malabar Milma Analytics")
+st.sidebar.title(" Milma Analytics")
+files = st.sidebar.file_uploader("Upload CSVs", type="csv", accept_multiple_files=True)
 
 if files:
     df = load_and_clean_data(files)
@@ -162,8 +145,7 @@ if files:
             st.title(f" {sel_dept} Performance Overview")
             c1, c2, c3 = st.columns(3); active_list = sorted(v['product'].unique())
             c1.metric("Active Products", len(active_list)); c2.metric("Total Revenue", f"₹{v['sales'].sum():,.0f}"); c3.metric("Total Qty", f"{int(v['qty'].sum()):,}")
-            st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); 
-            st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
+            st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
 
         elif menu == "Product-Wise Trend":
             st.title(" Product Monthly Analysis")
@@ -179,33 +161,17 @@ if files:
             with t2: yearly_sets = v.groupby('year')['product'].apply(lambda x: set(x.str.strip().unique())).to_dict(); all_yrs = sorted(list(yearly_sets.keys())); target_yr = st.selectbox("Lifecycle Year", all_yrs, index=len(all_yrs)-1); st.metric(f"Total Products Sold in {target_yr}", len(yearly_sets[target_yr])); curr = yearly_sets[target_yr]; past_yrs = [y for y in all_yrs if y < target_yr]; seen_before = set().union(*(yearly_sets[y] for y in past_yrs)) if past_yrs else set(); prev_yr = max(past_yrs) if past_yrs else None; prev_s = yearly_sets[prev_yr] if prev_yr else set(); b_new, drop, ret = sorted(list(curr-seen_before)), sorted(list(prev_s-curr)), sorted(list((curr&seen_before)-prev_s)); l1, l2, l3 = st.columns(3); l1.info(f"NEW ({len(b_new)})"); [l1.write(f"+ {p}") for p in b_new]; l2.error(f"DROPPED ({len(drop)})"); [l2.write(f"- {p}") for p in drop]; l3.warning(f"RETURNING ({len(ret)})"); [l3.write(f"↺ {p}") for p in ret]
             with t3: st.subheader(" The Consistency Dashboard"); all_yrs = sorted(v['year'].unique()); consistent_prods = v.groupby('product')['year'].nunique(); old_faithfuls = consistent_prods[consistent_prods == len(all_yrs)].index.tolist(); recent_yrs = all_yrs[-2:]; first_seen = v.groupby('product')['year'].min(); newbies = first_seen[first_seen.isin(recent_yrs)].index.tolist(); metric = st.radio("Compare by:", ["Revenue", "Quantity"], horizontal=True); val_col = 'sales' if metric == "Revenue" else 'qty'; old_avg = v[v['product'].isin(old_faithfuls)].groupby('year')[val_col].mean(); new_avg = v[v['product'].isin(newbies)].groupby('year')[val_col].mean(); fig_c = go.Figure(); fig_c.add_trace(go.Scatter(x=old_avg.index, y=old_avg.values, name="Old Faithfuls (Avg)", line=dict(color='gold', width=4))); fig_c.add_trace(go.Scatter(x=new_avg.index, y=new_avg.values, name="Newbies (Avg)", line=dict(color='cyan', dash='dot'))); fig_c.update_layout(title=f"Consistency: {metric} Comparison", template="plotly_white"); st.plotly_chart(fig_c, use_container_width=True)
             with t4: st.markdown("### 📊 Sales Channel Distribution");split = v.groupby('order_type')['sales'].sum().reset_index();fig_pie = go.Figure(data=[go.Pie(labels=split['order_type'],values=split['sales'], hole=.5, marker=dict(colors=['#1F4959', '#5C7C89']))]);
-    
-    
-    # 1. Prepare Data
-    split = v.groupby('order_type')['sales'].sum().reset_index()
-    
-    # 2. Create the Donut Chart
-    fig_pie = go.Figure(data=[go.Pie(
-        labels=split['order_type'],
-        values=split['sales'], 
-        hole=.5, 
-        marker=dict(colors=['#1F4959', '#5C7C89'])
-    )])
-    
-    # 3. Apply Premium Styling (Fixed the missing bracket here)
-    fig_pie.update_layout(
-        title_text="Revenue Share: Bulk vs Retail",
-        template="plotly_dark",
-        font_family="Times New Roman",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        margin=dict(l=20, r=20, t=50, b=20)
-    ) # <--- This was the missing bracket!
-    
-    # 4. Display
-    st.plotly_chart(fig_pie, use_container_width=True)
-            
-     elif menu == "Elasticity Engine":
+            fig_pie.update_layout(
+                title_text="Revenue Share: Bulk vs Retail",
+                template="plotly_dark",
+                font_family="Times New Roman",
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                margin=dict(l=20, r=20, t=50, b=20) # Ensures it stays inside the border
+            );
+            st.plotly_chart(fig_pie, use_container_width=True)
+
+        elif menu == "Elasticity Engine":
             st.title(" Advanced Product Categorization")
             tab_inventory, tab_seasonality, tab_cannibal, tab_fin = st.tabs(["Inventory Sensitivity Map", "The 'Heat Effect' Trend", "Cannibalization Audit", "Financial Impact Audit"])
 
@@ -339,46 +305,6 @@ if files:
                     audit_df = pd.DataFrame(audit_data).sort_values(by='Revenue Gap (₹)', ascending=False)
                     st.write("**REVENUE GAP AUDIT COMPLETED**"); st.dataframe(audit_df.head(129), use_container_width=True)
 
-        elif menu == "Price Optimization":
-            st.title("Strategic Price Engine")
-            tab_chart, tab_audit = st.tabs(["Optimization Curve", " Revenue Gap Audit"])
-            with tab_chart:
-                product_list = v['product'].unique(); fig = go.Figure()
-                for prod in product_list:
-                    df_p = v[v['product'] == prod]
-                    if len(df_p) > 5:
-                        X, y = df_p[['price']].values, df_p['qty'].values
-                        poly = PolynomialFeatures(degree=2, include_bias=False); X_poly = poly.fit_transform(X); model = LinearRegression().fit(X_poly, y)
-                        y_pred_all = model.predict(X_poly); r2 = r2_score(y, y_pred_all)
-                        p_range = np.linspace(X.min() * 0.7, X.max() * 1.4, 100).reshape(-1, 1); pred_qty = model.predict(poly.transform(p_range))
-                        pred_rev = p_range.flatten() * pred_qty; opt_idx = np.argmax(pred_rev); opt_p, opt_q = p_range[opt_idx][0], pred_qty[opt_idx]
-                        fig.add_trace(go.Scatter(x=X.flatten(), y=y, mode='markers', name=f'Actual {prod}', visible=False, marker=dict(color='black', opacity=0.6)))
-                        fig.add_trace(go.Scatter(x=p_range.flatten(), y=pred_qty, mode='lines', name=f'Curve (R²: {r2:.2f})', visible=False, line=dict(color='red', width=3)))
-                        fig.add_trace(go.Scatter(x=[opt_p], y=[opt_q], mode='markers+text', text=[f"OPTIMAL: ₹{opt_p:.2f}"], textposition="top center", name=f"Peak {prod}", visible=False, marker=dict(color='blue', size=14, symbol='diamond')))
-                buttons = []
-                for i, prod in enumerate(product_list):
-                    visibility = [False] * len(fig.data); visibility[i*3 : i*3 + 3] = [True, True, True]
-                    buttons.append(dict(label=prod, method="update", args=[{"visible": visibility}, {"title": f"<b>{prod} Strategy</b>"}]))
-                if len(fig.data) > 0:
-                    for j in range(3): fig.data[j].visible = True
-                fig.update_layout(updatemenus=[dict(active=0, buttons=buttons, x=0, y=1.2, xanchor="left", yanchor="top")], title=f"<b>MILMA PRICE OPTIMIZATION ENGINE</b>", xaxis_title="Price per Unit (₹)", yaxis_title="Demand (Units)", template="plotly_white", hovermode="x unified")
-                st.plotly_chart(fig, use_container_width=True)
-            with tab_audit:
-                audit_data = []; prod_list_audit = v['product'].unique()
-                for prod in prod_list_audit:
-                    df_p = v[v['product'] == prod]
-                    if len(df_p) > 5:
-                        X, y = df_p[['price']].values, df_p['qty'].values
-                        poly = PolynomialFeatures(degree=2, include_bias=False); model = LinearRegression().fit(poly.fit_transform(X), y)
-                        p_range = np.linspace(X.min() * 0.5, X.max() * 1.5, 200).reshape(-1, 1); pred_qty = model.predict(poly.transform(p_range))
-                        current_avg_price, current_rev = X.mean(), X.mean() * y.mean()
-                        rev_curve = p_range.flatten() * pred_qty; opt_idx = np.argmax(rev_curve); opt_price, opt_rev = p_range[opt_idx][0], rev_curve[opt_idx]
-                        gap = opt_rev - current_rev
-                        audit_data.append({'Product': prod, 'Current Price': round(current_avg_price, 2), 'Optimal Price': round(opt_price, 2), 'Current Revenue': round(current_rev, 2), 'Potential Revenue': round(opt_rev, 2), 'Revenue Gap (₹)': round(gap, 2), 'Improvement (%)': round((gap / current_rev) * 100, 2)})
-                if audit_data:
-                    audit_df = pd.DataFrame(audit_data).sort_values(by='Revenue Gap (₹)', ascending=False)
-                    st.write("**REVENUE GAP AUDIT COMPLETED**"); st.dataframe(audit_df.head(129), use_container_width=True)
-
         elif menu == "Strategic Clustering":
             st.title("Strategic Portfolio K-Means")
             inv_rep = get_final_report(v)
@@ -413,18 +339,18 @@ if files:
          # Ensure this 'elif' is at the exact same indentation level as your other 'elif' statements
         elif menu == "Strategic Recommendations":
             st.title(" Strategic Product Audit")
-            
+
             # Selection for Deep Dive
             target_p = st.selectbox("Select Product for Triple-Model Audit", sorted(v['product'].unique()))
             p_df = v[v['product'] == target_p].sort_values('date')
-            
+
             if len(p_df) >= 3:
                 # --- TRIPLE MODEL LOGIC ---
-                
+
                 # Model 1: Polynomial Regression (Trend)
                 z = np.polyfit(range(len(p_df)), p_df['sales'], 1)
                 slope = z[0]
-                
+
                 # Model 2: Price Elasticity (Sensitivity)
                 try:
                     p_agg = p_df.groupby('date').agg({'qty': 'sum', 'price': 'mean'}).reset_index()
@@ -468,21 +394,21 @@ if files:
 
                 st.markdown("### Evidence Visualization")
                 fig_col1, fig_col2 = st.columns(2)
-                
+
                 with fig_col1:
-                    fig_trend = px.scatter(p_df, x='date', y='sales', trendline="ols", 
+                    fig_trend = px.scatter(p_df, x='date', y='sales', trendline="ols",
                                          title=f"Regression Trendline: {target_p}", template="plotly_dark")
                     fig_trend.update_traces(marker=dict(color=color))
                     st.plotly_chart(fig_trend, use_container_width=True)
 
                 with fig_col2:
-                    fig_price = px.scatter(p_df, x='price', y='qty', 
+                    fig_price = px.scatter(p_df, x='price', y='qty',
                                          title=f"Price vs Demand (Sensitivity): {target_p}", template="plotly_dark")
                     fig_price.update_traces(marker=dict(color="#5C7C89"))
                     st.plotly_chart(fig_price, use_container_width=True)
             else:
                 st.warning("Insufficient historical data for this product (Need 3+ periods).")
-        
+
         elif menu == "Risk & Forecast":
             st.title(" Strategic Health & 2026 Projections")
 
@@ -551,6 +477,3 @@ if files:
                 st.markdown(f"**Health Audit:** {verdict_p}")
 else:
     st.info("Upload CSV files to begin.")
-
-
-
