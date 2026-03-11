@@ -14,44 +14,41 @@ from sklearn.metrics import r2_score, mean_squared_error
 st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
 
 # 2. THE PROFESSIONAL CSS
+Python
+import streamlit as st
+
+# 1. PAGE SETUP
+st.set_page_config(page_title="Milma Strategic Intelligence", layout="wide")
+
+# 2. PREMIUM CSS (Using colors from your reference image)
 st.markdown("""
     <style>
     /* Global Font: Times New Roman */
     html, body, [class*="css"], .stApp, h1, h2, h3, p, span, div, button {
         font-family: 'Times New Roman', Times, serif !important;
-        color: #2C3E50; /* Deep charcoal for readability */
     }
 
-    /* Professional Light Background */
+    /* Professional Background Gradient */
     .stApp {
-        background-color: #F8F9FA;
-    }
-
-    /* White Sidebar for a clean look */
-    [data-testid="stSidebar"] {
-        background-color: #FFFFFF !important;
-        border-right: 1px solid #E0E0E0;
-    }
-
-    /* Card-based layout for charts and metrics */
-    div[data-testid="stMetric"], .stPlotlyChart, .stDataFrame {
-        background-color: #FFFFFF !important;
-        border-radius: 8px !important;
-        padding: 25px !important;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
-        border: 1px solid #EDEDED !important;
-    }
-
-    /* Professional Blue Buttons */
-    .stButton>button {
-        background-color: #1F497D; /* Navy Blue */
+        background: linear-gradient(180deg, #011425 0%, #1F4959 100%);
         color: white;
-        border-radius: 4px;
-        font-weight: bold;
-        border: none;
+    }
+
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: rgba(1, 20, 37, 0.95) !important;
+        border-right: 1px solid #5C7C89;
+    }
+
+    /* Clean Card Containers */
+    div[data-testid="stMetric"], .stPlotlyChart {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(92, 124, 137, 0.3) !important;
+        border-radius: 10px !important;
+        backdrop-filter: blur(10px);
     }
     </style>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True
 
 # ---------------------------------------------------------
 # GLOBAL UTILITY FUNCTIONS
