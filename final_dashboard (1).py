@@ -145,6 +145,17 @@ if files:
             st.markdown("---"); st.subheader("Category Performance (Revenue vs Quantity)"); 
             st.plotly_chart(create_toggle_chart(v, f"Overall {sel_dept} Monthly Trend"), use_container_width=True)
 
+        fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(family="Times New Roman", size=16, color="#FFFFFF"), # Forces White Font
+        margin=dict(l=20, r=20, t=40, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+
 
         elif menu == "Product-Wise Trend":
             st.title(" Product Monthly Analysis")
